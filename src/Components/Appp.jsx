@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Star from "./Components/Star";
 import { Data } from "./utils/Data";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
@@ -9,22 +9,16 @@ function App() {
   const [filterText, setFilterText] = useState("");
   let [rating, setRating] = useState(false);
   let [ratingPoint, setRatingPoint] = useState();
-  let [filterData,setFilterData]=useState("")
 
   const handleFilterChange = (e) => {
     const text = e.target.value.toLowerCase();
     setFilterText(text);
   };
 
- 
-
-  useEffect(()=>{
-    const filteredMovies = Data.filter((movie) =>
+  const filteredMovies = Data.filter((movie) =>
     movie.title.toLowerCase().includes(filterText)
   );
-    setFilterData(filteredMovies)
-  },[])
- 
+
   let handleRating = () => {
     setRating(!rating);
   };
@@ -38,22 +32,20 @@ function App() {
     setIsChecked(event.target.checked);
     // console.log(id)
     // id=id;
-    // let newData=filteredMovies.map((ele,i)=>{
-    //   // return ele
+    let newData=filteredMovies.map((ele,i)=>{
+      // return ele
       
-    //   if(ele.rating==value){
-    //     console.log(ele)
-    //   setNewData([...newData,ele])
+      if(ele.rating==value){
+        console.log(ele)
+      setNewData([...newData,ele])
       
-    //   }
-    // })
+      }
+    })
 
-    // return newData
-    const filteredData = filterData.filter((movie) => movie.rating === value);
-    setNewData(filteredData);
+    return newData
 
   };
-  console.log(newData,"filter")
+  console.log(newData)
 
 
   let ratingData = [
@@ -121,7 +113,7 @@ function App() {
           onChange={handleFilterChange}
         />
 
-{/* {newData ?     (
+{newData ?     (
           <div>
             {newData.map((movie, index) => (
               movie.id==id ? (
@@ -132,11 +124,10 @@ function App() {
               ):""
             ))}
           </div>
-        ): */}
-        {
-          filterData.length > 0 && (
+        ):(
+          filterText.length > 0 && (
           <div>
-            {filterData.map((movie, index) => (
+            {filteredMovies.map((movie, index) => (
               <div key={index}>
                 <p>{movie.title}</p>
                 <Star star={movie.rating} />
@@ -144,7 +135,7 @@ function App() {
             ))}
           </div>
         )
-        }
+        )} 
         {/* {filterText.length > 0 && (
           <div>
             {filteredMovies.map((movie, index) => (
