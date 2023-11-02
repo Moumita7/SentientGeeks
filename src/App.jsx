@@ -1,160 +1,131 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Star from "./Components/Star";
-import { Data } from "./utils/Data";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { Data, GenreData, ratingData } from "./utils/Data";
+import { IoIosArrowDown } from "react-icons/io";
 import "./App.css";
 import Rating from "./Components/Rating";
+import Genre from "./Components/Genre";
 
 function App() {
   const [filterText, setFilterText] = useState("");
   let [rating, setRating] = useState(false);
-  let [ratingPoint, setRatingPoint] = useState();
-  let [filterData,setFilterData]=useState("")
+  let [genre, setGenre] = useState(false);
+
+  let [filteredMoviesData] = useState(Data);
+
+  console.log("ff", filteredMoviesData);
 
   const handleFilterChange = (e) => {
     const text = e.target.value.toLowerCase();
     setFilterText(text);
   };
 
- 
-
-  useEffect(()=>{
-    const filteredMovies = Data.filter((movie) =>
+  const filteredMovies = filteredMoviesData.filter((movie) =>
     movie.title.toLowerCase().includes(filterText)
   );
-    setFilterData(filteredMovies)
-  },[])
- 
+
   let handleRating = () => {
     setRating(!rating);
   };
+  let handleGenre = () => {
+    setGenre(!genre);
+  };
 
   const [isChecked, setIsChecked] = useState(false);
-  let [newData,setNewData]=useState([])
-  let id;
+  const [isCheckedGenre, setIsCheckedGenre] = useState(false);
+
+  let [ratingEle, setratingEle] = useState("");
+  let [genreEle, setgenreEle] = useState([]);
 
   let handleRatingPoint = (value) => {
-    // console.log(data.value)
-    setIsChecked(event.target.checked);
-    // console.log(id)
-    // id=id;
-    // let newData=filteredMovies.map((ele,i)=>{
-    //   // return ele
-      
-    //   if(ele.rating==value){
-    //     console.log(ele)
-    //   setNewData([...newData,ele])
-      
-    //   }
-    // })
+    setIsChecked(!isChecked);
 
-    // return newData
-    const filteredData = filterData.filter((movie) => movie.rating === value);
-    setNewData(filteredData);
-
+    let elearr = [];
+    filteredMovies.filter((ele) => {
+      if (ele.rating == value) {
+        elearr.push(ele);
+        setratingEle(elearr);
+      }
+    });
   };
-  console.log(newData,"filter")
+  // console.log(filteredMovies);
+  // console.log("c", isChecked);
 
+  let handleGenrePoint = (category) => {
+    setIsCheckedGenre(!isCheckedGenre);
 
-  let ratingData = [
-    {
-      id: 1,
-      value: 1,
-    },
-    {
-      id: 2,
-      value: 2,
-    },
-    {
-      id: 3,
-      value: 3,
-    },
-    {
-      id: 4,
-      value: 4,
-    },
-    {
-      id: 5,
-      value: 5,
-    },
-    {
-      id: 6,
-      value: 6,
-    },
-    {
-      id: 7,
-      value: 7,
-    },
-    {
-      id: 8,
-      value: 8,
-    },
-    {
-      id: 9,
-      value: 9,
-    },
-    {
-      id: 10,
-      value: 10,
-    },
-  ];
+    let elearrGenre = [];
+    filteredMovies.filter((ele) => {
+      if (ele.category == category) {
+        elearrGenre.push(ele);
+        setgenreEle(elearrGenre);
+      }
+    });
+  };
+  // console.log("data",genreEle)
 
   return (
     <div className="main">
-      {/* {Data.map((ele,id)=>{
-    return <div key={id}>
-    <h2>{ele.title}</h2>
-    <h2>{ele.rating}</h2>
-    <h2>{ele.category}</h2>
-    <h4>okkkk</h4>
-    <Star star={ele.rating}/>
-
-
-    </div>
-  })} */}
       <div>
-        {/* </div> */}
         <input
           type="text"
           placeholder="Enter Movie Name"
           value={filterText}
           onChange={handleFilterChange}
         />
-
-{/* {newData ?     (
-          <div>
-            {newData.map((movie, index) => (
-              movie.id==id ? (
-              <div key={index}>
-                <p>{movie.title}</p>
-                <Star star={movie.rating} />
+        {filterText.length > 0 &&
+          (isChecked ? (
+            ratingEle.length == 0 ? (
+              ""
+            ) : (
+              <div style={{ border: "1px solid black" }}>
+                {ratingEle?.map((ele, id) => {
+                  return (
+                    <div key={id} style={{ display: "flex" }}>
+                      <div>
+                        <p>{ele.title}</p>
+                        <Star star={ele.rating} />
+                      </div>
+                      <div>
+                        <p style={{ fontSize: "10px" }}>{ele.category}</p>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              ):""
-            ))}
-          </div>
-        ): */}
-        {
-          filterData.length > 0 && (
-          <div>
-            {filterData.map((movie, index) => (
-              <div key={index}>
-                <p>{movie.title}</p>
-                <Star star={movie.rating} />
-              </div>
-            ))}
-          </div>
-        )
-        }
-        {/* {filterText.length > 0 && (
-          <div>
-            {filteredMovies.map((movie, index) => (
-              <div key={index}>
-                <p>{movie.title}</p>
-                <Star star={movie.rating} />
-              </div>
-            ))}
-          </div>
-        )} */}
+            )
+          ) : isCheckedGenre ? (
+            genreEle.map((ele, id) => {
+              return (
+                <div
+                  key={id}
+                  style={{ display: "flex", border: "1px solid black" }}
+                >
+                  <div>
+                    <p>{ele.title}</p>
+                    <Star star={ele.rating} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "10px" }}>{ele.category}</p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div style={{ border: "1px solid black" }}>
+              {filteredMovies.map((movie, index) => (
+                <div key={index} style={{ display: "flex" }}>
+                  <div>
+                    <p>{movie.title}</p>
+                    <Star star={movie.rating} />
+                  </div>
+                  <div>
+                    <p style={{ fontSize: "10px" }}>{movie.category}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ))}
       </div>
       <div className="rating">
         <div>
@@ -163,13 +134,8 @@ function App() {
           </button>
           {rating ? (
             <div>
-              <input
-                type="checkbox"
-                id="vehicle1"
-                name="vehicle1"
-                value="Bike"
-              />
-              <label for="vehicle1"> All Rating</label>
+              <input type="checkbox" value="Bike" />
+              <label> All Rating</label>
               <Rating handleRatingPoint={handleRatingPoint} arr={ratingData} />
             </div>
           ) : (
@@ -177,10 +143,19 @@ function App() {
           )}
         </div>
         <div>
-          <button>
+          <button onClick={handleGenre}>
             {" "}
             Genre <IoIosArrowDown />
           </button>
+          {genre ? (
+            <div>
+              <input type="checkbox" value="Bike" />
+              <label> All Genre</label>
+              <Genre arr={GenreData} handleGenrePoint={handleGenrePoint} />
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>
